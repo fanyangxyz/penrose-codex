@@ -121,7 +121,7 @@ function drawTiles() {
           if (!corners || !inViewport(corners)) continue;
           // fill(fillColor);
           stroke(13, 15, 26, 140);
-          strokeWeight(0.9);
+          strokeWeight(3);
           beginShape();
           corners.forEach((p) => vertex(p.x, p.y));
           endShape(CLOSE);
