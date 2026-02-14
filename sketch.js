@@ -1,6 +1,6 @@
 // de Bruijn pentagrid → Penrose rhombus tiling (dual construction)
-const FAMILY_COUNT = 8;
-const ANGLE_STEP = (2 * Math.PI) / FAMILY_COUNT;
+let FAMILY_COUNT = 5;
+let ANGLE_STEP = (2 * Math.PI) / FAMILY_COUNT;
 const THICK_COLOR = "#ee964b";
 const THIN_COLOR = "#f4d35e";
 
@@ -27,6 +27,7 @@ function draw() {
 
 function rebuild() {
   randomSeed(seed);
+  ANGLE_STEP = (2 * Math.PI) / FAMILY_COUNT;
   // Offsets set line phases; sum to 0 (mod 1) for a consistent pentagrid.
   const baseOffsets = Array.from({ length: FAMILY_COUNT - 1 }, () => random());
   const sum = baseOffsets.reduce((acc, v) => acc + v, 0);
@@ -131,7 +132,13 @@ function drawTiles() {
 }
 
 function keyPressed() {
-  if (key === "r" || key === "R") {
+  if (keyCode === UP_ARROW) {
+    FAMILY_COUNT = min(FAMILY_COUNT + 1, 10);
+    rebuild();
+  } else if (keyCode === DOWN_ARROW) {
+    FAMILY_COUNT = max(FAMILY_COUNT - 1, 3);
+    rebuild();
+  } else if (key === "r" || key === "R") {
     seed += 1;
     rebuild();
   } else if (key === "s" || key === "S") {
