@@ -15,7 +15,7 @@ let familyVectors = [];
 function setup() {
   createCanvas(windowWidth, windowHeight);
   smooth();
-  noLoop();
+  // noLoop();
   rebuild();
 }
 
@@ -131,13 +131,7 @@ function drawTiles() {
 }
 
 function keyPressed() {
-  if (keyCode === UP_ARROW) {
-    lineRange = min(lineRange + 2, 24);
-    redraw();
-  } else if (keyCode === DOWN_ARROW) {
-    lineRange = max(lineRange - 2, 6);
-    redraw();
-  } else if (key === "r" || key === "R") {
+  if (key === "r" || key === "R") {
     seed += 1;
     rebuild();
   } else if (key === "s" || key === "S") {
