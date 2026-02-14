@@ -3,13 +3,6 @@ const FAMILY_COUNT = 8;
 const ANGLE_STEP = (2 * Math.PI) / FAMILY_COUNT;
 const THICK_COLOR = "#ee964b";
 const THIN_COLOR = "#f4d35e";
-const GRID_COLORS = [
-  "#2a9d8f",
-  "#e9c46a",
-  "#f4a261",
-  "#e76f51",
-  "#4ea8de",
-];
 
 let seed = 1;
 let lineSpacing = 60; // Will be redefined in rebuild
@@ -18,7 +11,6 @@ let edgeLength = 40; // Will be redefined in rebuild
 let familyOffsets = [];
 let familyNormals = [];
 let familyVectors = [];
-let showGrid = true;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -30,7 +22,6 @@ function setup() {
 function draw() {
   background(12, 14, 24);
   translate(width / 2, height / 2);
-  // if (showGrid) drawGridLines();
   drawTiles();
 }
 
@@ -139,26 +130,6 @@ function drawTiles() {
   }
 }
 
-function drawGridLines() {
-  const extent = Math.max(width, height);
-  strokeWeight(2);
-  for (let i = 0; i < FAMILY_COUNT; i += 1) {
-    const n = familyNormals[i];
-    const dir = createVector(-n.y, n.x);
-    const c = color(GRID_COLORS[i % GRID_COLORS.length]);
-    // c.setAlpha(100);
-    stroke(c);
-    for (let k = -lineRange; k <= lineRange; k += 1) {
-      const d = familyLineOffset(i, k);
-      const p0 = createVector(n.x * d, n.y * d);
-      const p1 = p5.Vector.add(p0, p5.Vector.mult(dir, extent));
-      const p2 = p5.Vector.add(p0, p5.Vector.mult(dir, -extent));
-      line(p1.x, p1.y, p2.x, p2.y);
-    }
-    // break;
-  }
-}
-
 function keyPressed() {
   if (keyCode === UP_ARROW) {
     lineRange = min(lineRange + 2, 24);
@@ -171,9 +142,6 @@ function keyPressed() {
     rebuild();
   } else if (key === "s" || key === "S") {
     saveCanvas(`penrose-pentagrid-${seed}`, "png");
-  } else if (key === "g" || key === "G") {
-    showGrid = !showGrid;
-    redraw();
   }
 }
 
