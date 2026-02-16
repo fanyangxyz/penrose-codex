@@ -1,8 +1,41 @@
 // de Bruijn pentagrid → Penrose rhombus tiling (dual construction)
 let FAMILY_COUNT = 5;
 let ANGLE_STEP = (2 * Math.PI) / FAMILY_COUNT;
-const THICK_COLOR = "#ee964b";
-const THIN_COLOR = "#f4d35e";
+const PALETTES = {
+  qingxin: [
+    "#F3FAF9",
+    "#EAF4F4",
+    "#FBE7F0",
+    "#DDEFEA",
+    "#CCE3DE",
+    "#F7DCE8",
+    "#BFDCD2",
+    "#A4C3B2",
+    "#E6F4DA",
+    "#D8E2DC",
+    "#E4EEDC",
+    "#FFF2B3",
+    "#F6F4D2",
+    "#FFE6A7",
+    "#F9F7E8",
+  ],
+  yan: [
+    "#FAFCFD",
+    "#F4F8FA",
+    "#EEF4F7",
+    "#E9F0F4",
+    "#E3EBF0",
+    "#DFE7EC",
+    "#EDE6ED",
+    "#E8ECE5",
+    "#F1EEE3",
+    "#D8E2E9",
+    "#D1DCE5",
+    "#C9D6E0",
+    "#C3D0DB",
+    "#BCCAD6",
+  ],
+};
 
 let seed = 1;
 let lineSpacing = 60; // Will be redefined in rebuild
@@ -11,6 +44,7 @@ let edgeLength = 40; // Will be redefined in rebuild
 let familyOffsets = [];
 let familyNormals = [];
 let familyVectors = [];
+let paletteMode = "qingxin";
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -20,7 +54,7 @@ function setup() {
 }
 
 function draw() {
-  background(12, 14, 24);
+  background(255);
   translate(width / 2, height / 2);
   drawTiles();
 }
@@ -111,17 +145,21 @@ function rhombusType(i, j) {
 }
 
 function drawTiles() {
+  const palette = PALETTES[paletteMode];
+  const paletteSize = palette.length;
   for (let i = 0; i < FAMILY_COUNT; i += 1) {
     for (let j = i + 1; j < FAMILY_COUNT; j += 1) {
-      const type = rhombusType(i, j);
-      const fillColor = type === "thick" ? THICK_COLOR : THIN_COLOR;
+      const familyPair = i * FAMILY_COUNT + j;
       for (let k = -lineRange; k <= lineRange; k += 1) {
         for (let l = -lineRange; l <= lineRange; l += 1) {
           const corners = rhombusAt(i, j, k, l);
           if (!corners || !inViewport(corners)) continue;
-          // fill(fillColor);
+          const colorSeed = familyPair + k + l;
+          const colorIndex = ((colorSeed % paletteSize) + paletteSize) % paletteSize;
+          const fillColor = palette[colorIndex];
+          fill(fillColor);
           stroke(13, 15, 26, 140);
-          strokeWeight(3);
+          strokeWeight(1);
           beginShape();
           corners.forEach((p) => vertex(p.x, p.y));
           endShape(CLOSE);
@@ -141,6 +179,9 @@ function keyPressed() {
   } else if (key === "r" || key === "R") {
     seed += 1;
     rebuild();
+  } else if (key === "c" || key === "C") {
+    paletteMode = paletteMode === "qingxin" ? "yan" : "qingxin";
+    redraw();
   } else if (key === "s" || key === "S") {
     saveCanvas(`penrose-pentagrid-${seed}`, "png");
   }
